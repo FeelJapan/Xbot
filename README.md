@@ -105,4 +105,4 @@
 - その他
   - Docker Desktop
   - WSL2
-  - Ubuntu 20.04 LTS 
+  - Ubuntu 20.04 LTS
