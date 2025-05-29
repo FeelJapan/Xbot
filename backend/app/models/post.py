@@ -3,6 +3,17 @@ from sqlalchemy.sql import func
 from app.db.base_class import Base
 
 class Post(Base):
+    """
+    投稿を表すデータベースモデル
+    
+    Attributes:
+        id (int): 投稿の一意識別子
+        content (str): 投稿の内容
+        scheduled_time (datetime): 投稿予定時刻
+        posted (bool): 投稿済みフラグ
+        created_at (datetime): 作成日時
+        updated_at (datetime): 更新日時
+    """
     __tablename__ = "posts"
 
     id = Column(Integer, primary_key=True, index=True)
