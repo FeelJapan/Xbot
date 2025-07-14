@@ -11,6 +11,9 @@ class Settings(BaseSettings):
         X_ACCESS_TOKEN (str): Xアクセストークン
         X_ACCESS_TOKEN_SECRET (str): Xアクセストークンシークレット
         OPENAI_API_KEY (str): OpenAI APIキー
+        GEMINI_API_KEY (str): Google Gemini APIキー
+        GEMINI_MODEL (str): Geminiモデル名
+        GEMINI_MAX_TOKENS (int): 最大トークン数
         DATABASE_URL (str): データベース接続URL
         HOST (str): サーバーホスト
         PORT (int): サーバーポート
@@ -24,6 +27,11 @@ class Settings(BaseSettings):
     
     # ChatGPT API設定
     OPENAI_API_KEY: str
+    
+    # Gemini API設定
+    GEMINI_API_KEY: str
+    GEMINI_MODEL: str = "gemini-pro"
+    GEMINI_MAX_TOKENS: int = 2048
     
     # データベース設定
     DATABASE_URL: str = "postgresql://postgres:postgres@localhost:5432/xbot"

@@ -44,7 +44,7 @@ export const ModernUIDemo: React.FC = () => {
             image="https://picsum.photos/400/300"
           >
             <p className="mb-4">これはモダンなカードコンポーネントのデモです。</p>
-            <Button variant="primary">
+            <Button variant="solid">
               詳細を見る
             </Button>
           </Card>
@@ -54,7 +54,7 @@ export const ModernUIDemo: React.FC = () => {
             className="bg-gray-50 dark:bg-gray-700"
           >
             <p className="mb-4">異なるスタイルのカードも作成できます。</p>
-            <Button variant="secondary">
+            <Button variant="bordered">
               アクション
             </Button>
           </Card>
@@ -63,7 +63,7 @@ export const ModernUIDemo: React.FC = () => {
             title="アウトラインボタン"
           >
             <p className="mb-4">アウトラインスタイルのボタンも使用できます。</p>
-            <Button variant="outline">
+            <Button variant="ghost">
               クリック
             </Button>
           </Card>
@@ -108,7 +108,7 @@ export const ModernUIDemo: React.FC = () => {
             />
             
             <Button
-              variant="primary"
+              variant="solid"
               size="lg"
               className="w-full mt-6"
             >

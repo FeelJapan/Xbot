@@ -10,7 +10,7 @@ interface Post {
 }
 
 export default function Dashboard() {
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [posts, _] = useState<Post[]>([]);
 
   return (
     <div className="bg-white shadow sm:rounded-lg">

@@ -47,7 +47,7 @@ export default function CreatePost() {
     }
   };
 
-  const onSubmit = async (data: PostFormData) => {
+  const onSubmit = async (_: PostFormData) => {
     try {
       setIsSubmitting(true);
       // TODO: APIを呼び出して投稿を作成

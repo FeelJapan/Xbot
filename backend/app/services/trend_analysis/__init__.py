@@ -1,0 +1,3 @@
+"""
+Trend analysis package initialization
+""" 
