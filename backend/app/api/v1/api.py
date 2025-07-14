@@ -5,12 +5,8 @@ V1 API Router
 from fastapi import APIRouter
 
 from app.api.v1.endpoints import (
-    posts,
-    trends,
-    settings,
-    content_generation,
-    video_generation,
-    image_generation,
+    gemini,
+    search,
     post_management,
     post_analytics
 )
@@ -18,11 +14,7 @@ from app.api.v1.endpoints import (
 api_router = APIRouter()
 
 # 各エンドポイントをルーターに追加
-api_router.include_router(posts.router, prefix="/posts", tags=["posts"])
-api_router.include_router(trends.router, prefix="/trends", tags=["trends"])
-api_router.include_router(settings.router, prefix="/settings", tags=["settings"])
-api_router.include_router(content_generation.router, prefix="/content", tags=["content"])
-api_router.include_router(video_generation.router, prefix="/video", tags=["video"])
-api_router.include_router(image_generation.router, prefix="/image", tags=["image"])
+api_router.include_router(gemini.router, prefix="/gemini", tags=["gemini"])
+api_router.include_router(search.router, prefix="/search", tags=["search"])
 api_router.include_router(post_management.router, prefix="/post-management", tags=["post-management"])
 api_router.include_router(post_analytics.router, prefix="/analytics", tags=["analytics"]) 

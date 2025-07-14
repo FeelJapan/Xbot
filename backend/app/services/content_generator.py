@@ -1,6 +1,6 @@
 """
 コンテンツ生成サービス
-ChatGPT APIを使用したテキスト生成機能
+ChatGPT APIを使用したテキストコンテンツ生成機能
 """
 import os
 import asyncio
@@ -13,7 +13,7 @@ from dataclasses import dataclass, asdict
 import sqlite3
 from contextlib import asynccontextmanager
 
-from backend.core.logging.logger import get_logger
+from core.logging.logger import get_logger
 
 logger = get_logger("content_generator")
 

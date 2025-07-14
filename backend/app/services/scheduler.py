@@ -11,9 +11,9 @@ from datetime import datetime, timedelta
 from dataclasses import dataclass, asdict
 from enum import Enum
 
-from backend.core.logging.logger import get_logger
-from backend.core.async_tasks import get_task_manager
-from backend.app.services.post_manager import PostManager, Post, PostStatus
+from core.logging.logger import get_logger
+from core.async_tasks import get_task_manager
+from app.services.post_manager import PostManager, Post, PostStatus
 
 logger = get_logger("scheduler")
 
@@ -97,7 +97,16 @@ class PostScheduler:
             if self.config_file.exists():
                 with open(self.config_file, 'r', encoding='utf-8') as f:
                     data = json.load(f)
-                    self.config = ScheduleConfig(**data)
+                    self.config = ScheduleConfig(
+                        schedule_type=ScheduleType(data["schedule_type"]),
+                        start_time=datetime.fromisoformat(data["start_time"]),
+                        end_time=datetime.fromisoformat(data["end_time"]) if data.get("end_time") else None,
+                        interval_hours=data["interval_hours"],
+                        days_of_week=data["days_of_week"],
+                        optimal_time_slots=[OptimalTimeSlot(slot) for slot in data["optimal_time_slots"]] if data.get("optimal_time_slots") else [],
+                        max_posts_per_day=data["max_posts_per_day"],
+                        enabled=data["enabled"]
+                    )
             else:
                 self._create_default_config()
                     
@@ -118,10 +127,20 @@ class PostScheduler:
             with open(self.schedules_file, 'w', encoding='utf-8') as f:
                 json.dump(schedules_data, f, indent=2, ensure_ascii=False)
             
-            # 設定データの保存
-            config_data = asdict(self.config)
-            with open(self.config_file, 'w', encoding='utf-8') as f:
-                json.dump(config_data, f, indent=2, ensure_ascii=False)
+            # 設定データの保存（Enumを文字列に変換）
+            if self.config:
+                config_data = {
+                    "schedule_type": self.config.schedule_type.value,
+                    "start_time": self.config.start_time.isoformat(),
+                    "end_time": self.config.end_time.isoformat() if self.config.end_time else None,
+                    "interval_hours": self.config.interval_hours,
+                    "days_of_week": self.config.days_of_week,
+                    "optimal_time_slots": [slot.value for slot in self.config.optimal_time_slots] if self.config.optimal_time_slots else [],
+                    "max_posts_per_day": self.config.max_posts_per_day,
+                    "enabled": self.config.enabled
+                }
+                with open(self.config_file, 'w', encoding='utf-8') as f:
+                    json.dump(config_data, f, indent=2, ensure_ascii=False)
                 
             logger.info("スケジューラーデータを保存しました")
             

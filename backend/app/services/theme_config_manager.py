@@ -1,6 +1,6 @@
 """
-テーマ設定管理サービス
-投稿テーマの設定を管理する機能
+投稿テーマ設定管理サービス
+カテゴリ、優先順位、季節イベントなどの管理機能
 """
 import json
 import os
@@ -9,7 +9,7 @@ from pathlib import Path
 from datetime import datetime, timedelta
 from dataclasses import dataclass, asdict
 
-from backend.core.logging.logger import get_logger
+from core.logging.logger import get_logger
 
 logger = get_logger("theme_config_manager")
 

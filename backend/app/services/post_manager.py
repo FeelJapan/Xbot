@@ -10,11 +10,11 @@ from datetime import datetime, timedelta
 from dataclasses import dataclass, asdict
 from enum import Enum
 
-from backend.core.logging.logger import get_logger
-from backend.app.services.content_generator import ContentGenerator
-from backend.app.services.image_generator import ImageGenerator
-from backend.app.services.video_generator import VideoGenerator
-from backend.app.services.x_service import XService
+from core.logging.logger import get_logger
+from app.services.content_generator import ContentGenerator
+from app.services.image_generator import ImageGenerator
+from app.services.video_generator import VideoGenerator
+from app.services.x_service import XService
 
 logger = get_logger("post_manager")
 

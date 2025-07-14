@@ -3,7 +3,6 @@
 ## 前提条件
 - Node.js 18.0.0以上
 - Python 3.11以上
-- Docker Desktop
 - Git
 - 各APIのアクセスキー
   - X API
@@ -29,43 +28,32 @@
    cd frontend
    npm install
 
-   # バックエンド（各サービス）
-   cd ../services
-   for service in */; do
-     cd $service
-     python -m venv venv
-     source venv/bin/activate  # Windows: .\venv\Scripts\activate
-     pip install -r requirements.txt
-     cd ..
-   done
+   # バックエンド
+   cd ../backend
+   python -m venv venv312
+   # Windows: 
+   .\venv312\Scripts\activate
+   # Linux/Mac:
+   # source venv312/bin/activate
+   pip install -r requirements.txt
    ```
 
 4. データベースのセットアップ
    ```bash
-   # PostgreSQLの起動
-   docker-compose up -d db
-
-   # マイグレーションの実行
-   cd services
-   for service in */; do
-     cd $service
-     source venv/bin/activate  # Windows: .\venv\Scripts\activate
-     alembic upgrade head
-     cd ..
-   done
+   # SQLiteを使用するため、特別な設定は不要
+   # マイグレーションの実行（必要な場合）
+   cd backend
+   .\venv312\Scripts\activate  # Windows
+   alembic upgrade head
    ```
 
 ## 起動手順
 1. バックエンドサービスの起動
    ```bash
-   # 各サービスを起動
-   cd services
-   for service in */; do
-     cd $service
-     source venv/bin/activate  # Windows: .\venv\Scripts\activate
-     uvicorn main:app --reload --port 8001
-     cd ..
-   done
+   # バックエンドの起動
+   cd backend
+   .\venv312\Scripts\activate  # Windows
+   python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
    ```
 
 2. フロントエンドの起動
@@ -88,8 +76,8 @@
    - ネットワーク接続を確認
 
 2. データベース接続エラー
-   - PostgreSQLが起動しているか確認
-   - 接続情報が正しいか確認
+   - SQLiteファイルの権限を確認
+   - データベースファイルが存在するか確認
    - マイグレーションが実行されているか確認
 
 3. フロントエンドのビルドエラー
@@ -104,5 +92,4 @@
 
 ### ログの確認方法
 - フロントエンド: `frontend/logs/`
-- バックエンド: `services/*/logs/`
-- Docker: `docker logs <container_name>` 
+- バックエンド: `backend/logs/` 

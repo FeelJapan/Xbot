@@ -1,6 +1,6 @@
 """
 動画生成サービス
-Gemini Veo3 APIを使用した動画生成機能
+Google Gemini Veo3 APIを使用した動画生成機能
 """
 import os
 import asyncio
@@ -10,7 +10,7 @@ import aiohttp
 import json
 from datetime import datetime
 
-from backend.core.logging.logger import get_logger
+from core.logging.logger import get_logger
 
 logger = get_logger("video_generator")
 

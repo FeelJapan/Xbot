@@ -13,7 +13,6 @@ import statistics
 
 from core.logging.logger import get_logger
 from app.services.post_manager import PostManager, Post, PostStatus, PostType
-from app.services.trend_analysis.main import TrendAnalysisService
 
 logger = get_logger("post_analytics")
 
@@ -104,7 +103,6 @@ class PostAnalytics:
         
         # サービス初期化
         self.post_manager = PostManager()
-        self.trend_service = TrendAnalysisService()
         
         # データ読み込み
         self.performance_data: Dict[str, PostPerformance] = {}
@@ -505,15 +503,9 @@ class PostAnalytics:
     def _get_trending_hashtags(self) -> List[str]:
         """現在のトレンドハッシュタグを取得"""
         try:
-            # トレンド分析サービスから取得
-            trends = self.trend_service.get_latest_trends(limit=50)
-            hashtags = []
-            
-            for trend in trends:
-                if hasattr(trend, 'hashtags'):
-                    hashtags.extend(trend.hashtags)
-                    
-            return list(set(hashtags))
+            # TODO: 将来的にトレンド分析サービスから取得
+            # 現在は仮のデータを返す
+            return ["#AI", "#ChatGPT", "#Tech", "#Innovation", "#Programming"]
             
         except Exception as e:
             logger.error(f"トレンドハッシュタグ取得エラー: {str(e)}")

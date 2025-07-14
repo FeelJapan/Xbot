@@ -1,6 +1,6 @@
 """
 画像生成サービス
-DALL-E APIを使用した画像生成機能
+OpenAI DALL-E APIを使用した画像生成機能
 """
 import os
 import asyncio
@@ -10,7 +10,7 @@ import aiohttp
 import json
 from datetime import datetime
 
-from backend.core.logging.logger import get_logger
+from core.logging.logger import get_logger
 
 logger = get_logger("image_generator")
 

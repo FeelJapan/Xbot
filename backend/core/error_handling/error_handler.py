@@ -1,10 +1,11 @@
 """
-Error handling module for Xbot
+エラーハンドリングモジュール
+アプリケーション全体で使用される共通のエラーハンドリング機能を提供
 """
 import asyncio
 from typing import Any, Callable, Optional, Type, Union, List
 from functools import wraps
-from backend.core.logging.logger import get_logger
+from core.logging.logger import get_logger
 import functools
 import time
 import traceback
