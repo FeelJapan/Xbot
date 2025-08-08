@@ -1,8 +1,8 @@
 import pytest
 from unittest.mock import patch, MagicMock
 from datetime import datetime, timedelta
-from ...trend_analysis.services.analysis import AnalysisService
-from ...trend_analysis.models import TrendVideo, VideoStats, VideoStatsHistory, ForeignReaction
+from trend_analysis.services.analysis import AnalysisService
+from trend_analysis.models import TrendVideo, VideoStats, VideoStatsHistory, ForeignReaction
 
 @pytest.fixture
 def analysis_service():

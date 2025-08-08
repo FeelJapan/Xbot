@@ -28,6 +28,8 @@ def setup_test_environment():
         "X_API_KEY": "test_x_api_key",
         "X_API_SECRET": "test_x_api_secret", 
         "X_ACCESS_TOKEN": "test_x_access_token",
+        "YOUTUBE_API_KEY": "test_youtube_api_key",
+        "GEMINI_API_KEY": "test_gemini_api_key",
         "X_ACCESS_TOKEN_SECRET": "test_x_access_token_secret",
         "OPENAI_API_KEY": "test_openai_api_key",
         "GEMINI_API_KEY": "test_gemini_api_key",

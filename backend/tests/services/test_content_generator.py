@@ -10,13 +10,13 @@ from datetime import datetime
 import json
 import sqlite3
 
-from backend.app.services.content_generator import (
+from app.services.content_generator import (
     ContentGenerator,
     GenerationRequest,
     GenerationResult,
     PromptTemplate
 )
-from backend.core.error_handling.error_handler import ContentGenerationError
+from core.error_handling.error_handler import ContentGenerationError
 
 @pytest.fixture
 def temp_db():

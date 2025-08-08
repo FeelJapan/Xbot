@@ -1,9 +1,9 @@
 import pytest
 from unittest.mock import patch, MagicMock
 from datetime import datetime, timedelta
-from ...trend_analysis.services.collector import TrendCollector
-from ...trend_analysis.models import TrendVideo, VideoStats
-from ...trend_analysis.repositories.trend_repository import TrendRepository
+from trend_analysis.services.collector import TrendCollector
+from trend_analysis.models import TrendVideo, VideoStats
+from trend_analysis.repositories.trend_repository import TrendRepository
 
 @pytest.fixture
 def mock_youtube_service():

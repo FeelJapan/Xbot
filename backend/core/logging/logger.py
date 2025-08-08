@@ -66,6 +66,10 @@ class Logger:
         """デバッグログの出力"""
         self.logger.debug(message)
     
+    def critical(self, message: str):
+        """クリティカルログの出力"""
+        self.logger.critical(message)
+    
     def save_error_log(self, message: str):
         """エラーログの自動保存"""
         error_log_dir = self.log_dir / "errors"

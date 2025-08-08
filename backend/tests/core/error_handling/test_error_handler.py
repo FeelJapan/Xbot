@@ -1,6 +1,6 @@
 import pytest
 import asyncio
-from backend.core.error_handling.error_handler import (
+from core.error_handling.error_handler import (
     XbotError,
     APIError,
     ConfigError,

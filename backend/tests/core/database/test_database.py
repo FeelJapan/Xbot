@@ -1,7 +1,7 @@
 import pytest
 import asyncio
 from datetime import datetime
-from backend.core.database.db_manager import DBManager, get_db_manager
+from core.database.db_manager import DBManager, get_db_manager
 
 @pytest.fixture
 async def db_manager():

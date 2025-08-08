@@ -97,16 +97,21 @@ class PostScheduler:
             if self.config_file.exists():
                 with open(self.config_file, 'r', encoding='utf-8') as f:
                     data = json.load(f)
-                    self.config = ScheduleConfig(
-                        schedule_type=ScheduleType(data["schedule_type"]),
-                        start_time=datetime.fromisoformat(data["start_time"]),
-                        end_time=datetime.fromisoformat(data["end_time"]) if data.get("end_time") else None,
-                        interval_hours=data["interval_hours"],
-                        days_of_week=data["days_of_week"],
-                        optimal_time_slots=[OptimalTimeSlot(slot) for slot in data["optimal_time_slots"]] if data.get("optimal_time_slots") else [],
-                        max_posts_per_day=data["max_posts_per_day"],
-                        enabled=data["enabled"]
-                    )
+                    try:
+                        self.config = ScheduleConfig(
+                            schedule_type=ScheduleType(data["schedule_type"]),
+                            start_time=datetime.fromisoformat(data["start_time"]),
+                            end_time=datetime.fromisoformat(data["end_time"]) if data.get("end_time") else None,
+                            interval_hours=data["interval_hours"],
+                            days_of_week=data["days_of_week"],
+                            optimal_time_slots=[OptimalTimeSlot(slot) for slot in data["optimal_time_slots"]] if data.get("optimal_time_slots") else [],
+                            max_posts_per_day=data["max_posts_per_day"],
+                            enabled=data["enabled"]
+                        )
+                    except (ValueError, KeyError) as e:
+                        logger.warning(f"設定ファイルの読み込みでエラーが発生しました: {str(e)}。デフォルト設定を使用します。")
+                        self._create_default_config()
+                        return
             else:
                 self._create_default_config()
                     
@@ -169,9 +174,15 @@ class PostScheduler:
     def start_scheduler(self) -> None:
         """スケジューラーを開始"""
         if not self.running:
-            self.running = True
-            asyncio.create_task(self._scheduler_loop())
-            logger.info("投稿スケジューラーを開始しました")
+            try:
+                # イベントループが実行中かチェック
+                loop = asyncio.get_running_loop()
+                self.running = True
+                asyncio.create_task(self._scheduler_loop())
+                logger.info("投稿スケジューラーを開始しました")
+            except RuntimeError:
+                # イベントループが実行されていない場合はスケジューラーを開始しない
+                logger.info("イベントループが実行されていないため、スケジューラーの開始をスキップしました")
     
     def stop_scheduler(self) -> None:
         """スケジューラーを停止"""
@@ -453,7 +464,7 @@ class PostScheduler:
             "id": schedule.id,
             "post_id": schedule.post_id,
             "scheduled_time": schedule.scheduled_time.isoformat(),
-            "schedule_type": schedule.schedule_type.value,
+            "schedule_type": schedule.schedule_type.value if hasattr(schedule.schedule_type, 'value') else str(schedule.schedule_type),
             "status": schedule.status,
             "created_at": schedule.created_at.isoformat(),
             "executed_at": schedule.executed_at.isoformat() if schedule.executed_at else None,

@@ -1,11 +1,13 @@
 import pytest
 from fastapi.testclient import TestClient
-from unittest.mock import patch
-from app.services.trend_analysis.main import app
+from unittest.mock import patch, Mock
 
 @pytest.fixture
 def client():
-    return TestClient(app)
+    # YouTubeClientの初期化をモックしてテスト用に置き換える
+    with patch('app.services.trend_analysis.youtube_client.YouTubeClient'):
+        from app.services.trend_analysis.main import app
+        return TestClient(app)
 
 def test_root(client):
     response = client.get("/")

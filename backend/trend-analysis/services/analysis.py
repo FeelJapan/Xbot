@@ -371,7 +371,7 @@ class AnalysisService:
             if not foreign_comments:
                 return ForeignReaction(
                     sentiment_score=0.0,
-                    reaction_type="unknown",
+                    reaction_type="no_foreign_comments",
                     comment_examples=[]
                 )
 
@@ -400,7 +400,7 @@ class AnalysisService:
             self.logger.error(f"Error analyzing foreign reaction: {str(e)}")
             return ForeignReaction(
                 sentiment_score=0.0,
-                reaction_type="unknown",
+                reaction_type="error",
                 comment_examples=[]
             )
 
@@ -417,7 +417,18 @@ class AnalysisService:
         # 英語の文字が含まれているかチェック
         english_chars = set('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
         text_chars = set(text)
-        return bool(english_chars.intersection(text_chars))
+        
+        # 英語文字の割合を計算
+        english_char_count = len(english_chars.intersection(text_chars))
+        total_chars = len(text_chars)
+        
+        if total_chars == 0:
+            return False
+            
+        english_ratio = english_char_count / total_chars
+        
+        # 英語文字が30%以上含まれている場合を外国人コメントと判定
+        return english_ratio > 0.3
 
     def _determine_reaction_type(self, comments: List[Dict], sentiment_score: float) -> str:
         """
@@ -432,11 +443,23 @@ class AnalysisService:
         """
         # 感情スコアに基づく基本的な判定
         if sentiment_score > 0.3:
-            return "positive"
+            # ポジティブな反応の詳細分類
+            if sentiment_score > 0.7:
+                return "very_positive"
+            else:
+                return "positive"
         elif sentiment_score < -0.3:
-            return "negative"
+            # ネガティブな反応の詳細分類
+            if sentiment_score < -0.7:
+                return "very_negative"
+            else:
+                return "negative"
         else:
-            return "neutral"
+            # ニュートラルな反応の詳細分類
+            if abs(sentiment_score) < 0.1:
+                return "neutral"
+            else:
+                return "mixed"
 
     def _extract_representative_comments(self, comments: List[Dict], max_examples: int = 3) -> List[str]:
         """
@@ -455,5 +478,154 @@ class AnalysisService:
         # いいね数でソート
         sorted_comments = sorted(comments, key=lambda x: x.get('like_count', 0), reverse=True)
         
-        # 上位のコメントを抽出
-        return [comment['text'] for comment in sorted_comments[:max_examples]] 
+        # 上位のコメントを抽出（重複を避けるため）
+        representative_comments = []
+        seen_texts = set()
+        
+        for comment in sorted_comments:
+            text = comment.get('text', '').strip()
+            if text and text not in seen_texts and len(representative_comments) < max_examples:
+                representative_comments.append(text)
+                seen_texts.add(text)
+        
+        return representative_comments
+
+    async def analyze_comprehensive_trends(self, video: TrendVideo) -> Dict:
+        """
+        包括的なトレンド分析を実行する
+
+        Args:
+            video: 分析対象の動画
+
+        Returns:
+            Dict: 包括的な分析結果
+        """
+        try:
+            # 基本分析
+            buzz_score = self._calculate_buzz_score(video)
+            trend_analysis = self._analyze_trends_over_time(video)
+            sentiment_analysis = self._analyze_sentiment(video)
+            foreign_reaction = self._analyze_foreign_reaction(video)
+
+            # 詳細分析
+            engagement_analysis = self._analyze_engagement_patterns(video)
+            viral_potential = self._calculate_viral_potential(video)
+            audience_demographics = self._analyze_audience_demographics(video)
+
+            return {
+                "buzz_score": buzz_score,
+                "trend_analysis": trend_analysis,
+                "sentiment_analysis": sentiment_analysis,
+                "foreign_reaction": foreign_reaction,
+                "engagement_analysis": engagement_analysis,
+                "viral_potential": viral_potential,
+                "audience_demographics": audience_demographics,
+                "analyzed_at": datetime.now().isoformat()
+            }
+
+        except Exception as e:
+            self.logger.error(f"Error in comprehensive analysis: {str(e)}")
+            return {
+                "error": str(e),
+                "analyzed_at": datetime.now().isoformat()
+            }
+
+    def _analyze_engagement_patterns(self, video: TrendVideo) -> Dict:
+        """
+        エンゲージメントパターンを分析する
+
+        Args:
+            video: 分析対象の動画
+
+        Returns:
+            Dict: エンゲージメント分析結果
+        """
+        try:
+            stats = video.stats
+            
+            # エンゲージメント率の詳細分析
+            like_ratio = stats.like_count / max(stats.view_count, 1)
+            comment_ratio = stats.comment_count / max(stats.view_count, 1)
+            
+            # エンゲージメント品質の評価
+            engagement_quality = "high" if stats.engagement_rate > 5.0 else "medium" if stats.engagement_rate > 2.0 else "low"
+            
+            return {
+                "engagement_rate": stats.engagement_rate,
+                "like_ratio": like_ratio,
+                "comment_ratio": comment_ratio,
+                "engagement_quality": engagement_quality,
+                "total_engagement": stats.like_count + stats.comment_count
+            }
+
+        except Exception as e:
+            self.logger.error(f"Error analyzing engagement patterns: {str(e)}")
+            return {}
+
+    def _calculate_viral_potential(self, video: TrendVideo) -> Dict:
+        """
+        バイラルポテンシャルを計算する
+
+        Args:
+            video: 分析対象の動画
+
+        Returns:
+            Dict: バイラルポテンシャル分析結果
+        """
+        try:
+            stats = video.stats
+            
+            # 視聴回数の急増率（仮想的な計算）
+            view_growth_rate = 0.0  # 実際の時系列データが必要
+            
+            # エンゲージメントの質
+            engagement_quality = min(stats.engagement_rate / 10.0, 1.0)
+            
+            # コメントの活性度
+            comment_activity = min(stats.comment_count / 1000.0, 1.0)
+            
+            # 総合的なバイラルスコア
+            viral_score = (engagement_quality * 0.4 + comment_activity * 0.3 + view_growth_rate * 0.3) * 100
+            
+            return {
+                "viral_score": viral_score,
+                "engagement_quality": engagement_quality,
+                "comment_activity": comment_activity,
+                "view_growth_rate": view_growth_rate,
+                "viral_potential": "high" if viral_score > 70 else "medium" if viral_score > 40 else "low"
+            }
+
+        except Exception as e:
+            self.logger.error(f"Error calculating viral potential: {str(e)}")
+            return {}
+
+    def _analyze_audience_demographics(self, video: TrendVideo) -> Dict:
+        """
+        視聴者層の分析を行う
+
+        Args:
+            video: 分析対象の動画
+
+        Returns:
+            Dict: 視聴者層分析結果
+        """
+        try:
+            # 外国人コメントの割合を計算
+            if hasattr(video, 'comments') and video.comments:
+                foreign_comment_count = len([
+                    comment for comment in video.comments
+                    if self._is_foreign_comment(comment.get('text', ''))
+                ])
+                foreign_ratio = foreign_comment_count / len(video.comments)
+            else:
+                foreign_ratio = 0.0
+
+            return {
+                "foreign_audience_ratio": foreign_ratio,
+                "domestic_audience_ratio": 1.0 - foreign_ratio,
+                "international_appeal": "high" if foreign_ratio > 0.3 else "medium" if foreign_ratio > 0.1 else "low"
+            }
+
+        except Exception as e:
+            self.logger.error(f"Error analyzing audience demographics: {str(e)}")
+            return {} 
