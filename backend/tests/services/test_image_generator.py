@@ -8,8 +8,8 @@ from pathlib import Path
 import tempfile
 import os
 
-from backend.app.services.image_generator import ImageGenerator
-from backend.core.error_handling.error_handler import ImageGenerationError
+from app.services.image_generator import ImageGenerator
+from core.error_handling.error_handler import ImageGenerationError
 
 @pytest.fixture
 def image_generator():

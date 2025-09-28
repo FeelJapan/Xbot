@@ -9,11 +9,11 @@ from pathlib import Path
 from datetime import datetime, timedelta
 from unittest.mock import Mock, patch, AsyncMock
 
-from backend.app.services.scheduler import (
+from app.services.scheduler import (
     PostScheduler, PostSchedule, ScheduleType, ScheduleConfig,
     OptimalTimeSlot
 )
-from backend.app.services.post_manager import PostManager, Post, PostContent, PostType, PostStatus
+from app.services.post_manager import PostManager, Post, PostContent, PostType, PostStatus
 
 @pytest.fixture
 def temp_data_dir():

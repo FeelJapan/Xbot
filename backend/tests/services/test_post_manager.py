@@ -8,10 +8,11 @@ from pathlib import Path
 from datetime import datetime, timedelta
 from unittest.mock import Mock, patch, AsyncMock
 
-from backend.app.services.post_manager import (
+from app.services.post_manager import (
     PostManager, Post, PostContent, PostType, PostStatus,
-    PostTemplate, PostSchedule
+    PostTemplate
 )
+from app.services.scheduler import PostSchedule
 
 @pytest.fixture
 def temp_data_dir():
@@ -22,10 +23,10 @@ def temp_data_dir():
 @pytest.fixture
 def post_manager(temp_data_dir):
     """投稿管理サービスのインスタンス"""
-    with patch('backend.app.services.post_manager.ContentGenerator'), \
-         patch('backend.app.services.post_manager.ImageGenerator'), \
-         patch('backend.app.services.post_manager.VideoGenerator'), \
-         patch('backend.app.services.post_manager.XService'):
+    with patch('app.services.post_manager.ContentGenerator'), \
+         patch('app.services.post_manager.ImageGenerator'), \
+         patch('app.services.post_manager.VideoGenerator'), \
+         patch('app.services.post_manager.XService'):
         
         manager = PostManager(data_dir=temp_data_dir)
         yield manager
@@ -57,10 +58,10 @@ class TestPostManager:
     
     def test_init(self, temp_data_dir):
         """初期化テスト"""
-        with patch('backend.app.services.post_manager.ContentGenerator'), \
-             patch('backend.app.services.post_manager.ImageGenerator'), \
-             patch('backend.app.services.post_manager.VideoGenerator'), \
-             patch('backend.app.services.post_manager.XService'):
+        with patch('app.services.post_manager.ContentGenerator'), \
+             patch('app.services.post_manager.ImageGenerator'), \
+             patch('app.services.post_manager.VideoGenerator'), \
+             patch('app.services.post_manager.XService'):
             
             manager = PostManager(data_dir=temp_data_dir)
             
@@ -273,10 +274,10 @@ class TestPostManager:
     
     def test_save_and_load_data(self, temp_data_dir, sample_post_content):
         """データ保存・読み込みテスト"""
-        with patch('backend.app.services.post_manager.ContentGenerator'), \
-             patch('backend.app.services.post_manager.ImageGenerator'), \
-             patch('backend.app.services.post_manager.VideoGenerator'), \
-             patch('backend.app.services.post_manager.XService'):
+        with patch('app.services.post_manager.ContentGenerator'), \
+             patch('app.services.post_manager.ImageGenerator'), \
+             patch('app.services.post_manager.VideoGenerator'), \
+             patch('app.services.post_manager.XService'):
             
             # 最初のマネージャーで投稿を作成
             manager1 = PostManager(data_dir=temp_data_dir)
