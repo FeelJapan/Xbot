@@ -1,0 +1,21 @@
+{
+  "schedule_type": "daily",
+  "start_time": "2025-09-06T02:55:46.398108",
+  "end_time": null,
+  "interval_hours": 24,
+  "days_of_week": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "optimal_time_slots": [
+    "morning",
+    "evening"
+  ],
+  "max_posts_per_day": 3,
+  "enabled": true
+}

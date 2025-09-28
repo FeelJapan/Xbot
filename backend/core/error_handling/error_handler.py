@@ -17,6 +17,14 @@ import json
 import os
 from pathlib import Path
 
+# 新しい通知システムをインポート
+try:
+    from core.notifications.notification_manager import notification_manager
+    from core.notifications.notification_types import NotificationType, NotificationLevel
+    NOTIFICATION_AVAILABLE = True
+except ImportError:
+    NOTIFICATION_AVAILABLE = False
+
 logger = get_logger("error_handler")
 
 class XbotError(Exception):
@@ -219,6 +227,21 @@ class ErrorHandler:
     
     def _send_notification(self, error: Exception, function_name: str):
         """エラー通知の送信"""
+        # 新しい通知システムが利用可能な場合はそれを使用
+        if NOTIFICATION_AVAILABLE:
+            try:
+                # 非同期でエラー通知を送信
+                asyncio.create_task(
+                    notification_manager.send_error_notification(
+                        error, function_name, "ErrorHandler"
+                    )
+                )
+                return
+            except Exception as notification_error:
+                logger.error(f"新しい通知システムでのエラー通知に失敗: {notification_error}")
+                # フォールバックとして古いシステムを使用
+        
+        # 古い通知システム（フォールバック）
         if not self.notification_config["email"]["enabled"]:
             return
         

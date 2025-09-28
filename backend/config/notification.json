@@ -1,0 +1,89 @@
+{
+  "email": {
+    "enabled": false,
+    "smtp_server": "smtp.gmail.com",
+    "smtp_port": 587,
+    "username": "your-email@gmail.com",
+    "password": "your-app-password",
+    "from_address": "your-email@gmail.com",
+    "to_addresses": ["admin@example.com"],
+    "use_tls": true
+  },
+  "slack": {
+    "enabled": false,
+    "webhook_url": "https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK",
+    "channel": "#general",
+    "username": "Xbot",
+    "icon_emoji": ":robot_face:"
+  },
+  "webhook": {
+    "enabled": false,
+    "webhook_url": "https://your-webhook-endpoint.com/notifications",
+    "method": "POST",
+    "headers": {
+      "Authorization": "Bearer your-token",
+      "Content-Type": "application/json"
+    },
+    "timeout": 10
+  },
+  "general": {
+    "retry_attempts": 3,
+    "retry_delay": 5,
+    "batch_size": 10,
+    "enable_quota_warnings": true,
+    "enable_system_notifications": true,
+    "enable_report_notifications": true
+  },
+  "reports": {
+    "daily": {
+      "enabled": true,
+      "time": "09:00",
+      "channels": ["email", "slack"]
+    },
+    "weekly": {
+      "enabled": true,
+      "time": "09:00",
+      "day": "monday",
+      "channels": ["email", "slack"]
+    },
+    "monthly": {
+      "enabled": true,
+      "time": "09:00",
+      "day": 1,
+      "channels": ["email"]
+    }
+  },
+  "templates": {
+    "error_notification": {
+      "enabled": true,
+      "channels": ["email", "slack"],
+      "level": "error"
+    },
+    "system_notification": {
+      "enabled": true,
+      "channels": ["email", "slack"],
+      "level": "info"
+    },
+    "quota_warning": {
+      "enabled": true,
+      "channels": ["email", "slack"],
+      "level": "warning"
+    },
+    "backup_complete": {
+      "enabled": true,
+      "channels": ["email"],
+      "level": "info"
+    },
+    "trend_analysis_complete": {
+      "enabled": true,
+      "channels": ["email", "slack"],
+      "level": "info"
+    },
+    "content_generation_complete": {
+      "enabled": true,
+      "channels": ["email"],
+      "level": "info"
+    }
+  }
+}
+

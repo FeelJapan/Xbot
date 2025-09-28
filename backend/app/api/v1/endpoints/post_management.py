@@ -17,7 +17,14 @@ router = APIRouter()
 
 # サービスインスタンス
 post_manager = PostManager()
-scheduler = PostScheduler()
+scheduler = None
+
+def get_scheduler():
+    """スケジューラーインスタンスを取得（遅延初期化）"""
+    global scheduler
+    if scheduler is None:
+        scheduler = PostScheduler()
+    return scheduler
 
 # リクエストモデル
 class PostContentRequest(BaseModel):
@@ -142,7 +149,7 @@ async def create_post(request: CreatePostRequest):
         
         # スケジュール時間が指定されている場合はスケジュール
         if request.scheduled_time:
-            scheduler.schedule_post(
+            get_scheduler().schedule_post(
                 post_id=post.id,
                 scheduled_time=request.scheduled_time,
                 schedule_type=ScheduleType.ONCE
@@ -326,7 +333,7 @@ async def schedule_post(post_id: str, request: SchedulePostRequest):
         schedule_type = ScheduleType(request.schedule_type)
         
         # スケジュールを作成
-        schedule = scheduler.schedule_post(
+        schedule = get_scheduler().schedule_post(
             post_id=post_id,
             scheduled_time=request.scheduled_time,
             schedule_type=schedule_type
@@ -410,7 +417,7 @@ async def get_drafts():
 async def get_schedules(status: Optional[str] = None, limit: int = 50):
     """スケジュール一覧を取得"""
     try:
-        schedules = scheduler.get_schedules(status=status, limit=limit)
+        schedules = get_scheduler().get_schedules(status=status, limit=limit)
         
         return [
             ScheduleResponse(
@@ -434,7 +441,7 @@ async def get_schedules(status: Optional[str] = None, limit: int = 50):
 async def get_schedule(schedule_id: str):
     """スケジュールを取得"""
     try:
-        schedule = scheduler.get_schedule(schedule_id)
+        schedule = get_scheduler().get_schedule(schedule_id)
         if schedule is None:
             raise HTTPException(status_code=404, detail="スケジュールが見つかりません")
         
@@ -459,7 +466,7 @@ async def get_schedule(schedule_id: str):
 async def cancel_schedule(schedule_id: str):
     """スケジュールをキャンセル"""
     try:
-        success = scheduler.cancel_schedule(schedule_id)
+        success = get_scheduler().cancel_schedule(schedule_id)
         if not success:
             raise HTTPException(status_code=404, detail="スケジュールが見つからないか、キャンセルできません")
         
@@ -494,7 +501,7 @@ async def create_recurring_schedule(request: CreateRecurringScheduleRequest):
         )
         
         # 定期的なスケジュールを作成
-        schedules = scheduler.create_recurring_schedule(
+        schedules = get_scheduler().create_recurring_schedule(
             post_template=request.post_template,
             schedule_config=config
         )
@@ -681,7 +688,7 @@ async def create_post_from_template(template_name: str, variables: Optional[Dict
 async def get_statistics():
     """統計情報を取得"""
     try:
-        stats = scheduler.get_statistics()
+        stats = get_scheduler().get_statistics()
         return StatisticsResponse(**stats)
         
     except Exception as e:
@@ -695,7 +702,7 @@ async def get_optimal_times(date: Optional[datetime] = None, max_suggestions: in
         if date is None:
             date = datetime.now()
         
-        optimal_times = scheduler.suggest_optimal_times(date, max_suggestions)
+        optimal_times = get_scheduler().suggest_optimal_times(date, max_suggestions)
         return {"optimal_times": [time.isoformat() for time in optimal_times]}
         
     except Exception as e:
